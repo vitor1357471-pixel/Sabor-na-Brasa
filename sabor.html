@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sabor na Brasa 🔥</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;900&family=Playfair+Display:wght@700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+<link rel="icon" type="image/png" href="favicon.ico">
+</head>
+<body>
+
+<header>
+  <div class="header-topbar">
+    <span>📍 Rua Abaete, 66 - Nossa Senhora da Conceição</span>
+    <span class="topbar-dot"></span>
+    <span>🕐 Ter–Dom: 18:00 às 23:45</span>
+    <span class="topbar-dot"></span>
+    <span>📞 (37) 99917-5310</span>
+    <span class="topbar-dot"></span>
+    <span>🛵 Entrega a partir de R$ 20,00</span>
+  </div>
+
+  <div class="header-main">
+    <div class="logo-title" id="logoWrap" onclick="handleLogoClick()">
+      <em>Sabor</em> na Brasa
+    </div>
+
+    <nav class="nav-center">
+      <a class="nav-link active" onclick="showPage('home')" id="nav-home">Cardápio</a>
+      <a class="nav-link" onclick="window.location='#contato'">Contato</a>
+    </nav>
+
+    <div class="nav-actions">
+      <div class="header-chip">
+        <div class="chip-dot"></div>
+        Aberto agora
+      </div>
+      <button class="cart-btn" onclick="toggleCart()">
+        🛒 Carrinho <span class="cart-count" id="cartCount">0</span>
+      </button>
+    </div>
+  </div>
+  <div class="header-accent"></div>
+</header>
+
+<div class="admin-login" id="adminLogin">
+  <div class="login-box">
+    <h2>🔐 Área Admin</h2>
+    <input type="text" id="loginUser" placeholder="Usuário">
+    <input type="password" id="loginPass" placeholder="Senha">
+    <p class="login-error" id="loginError">Usuário ou senha incorretos!</p>
+    <button class="btn-save" onclick="doLogin()">Entrar</button>
+    <button onclick="closeAdminLogin()" class="btn-cancel-admin">Cancelar</button>
+  </div>
+</div>
+
+<div id="page-home">
+  <section class="hero-carousel">
+    <div class="carousel-wrapper" id="carouselWrapper">
+    </div>
+  </section>
+
+  <section class="section" id="menu">
+    <div class="section-title">Nosso <span>Cardápio</span></div>
+    <p class="section-sub">Feito com ingredientes frescos e muito amor 🍔</p>
+
+    <div class="cat-tabs" id="catTabs"></div>
+    <div class="products-grid" id="productsGrid"></div>
+  </section>
+</div>
+
+<div id="page-admin" class="admin-panel" style="display: none;">
+  <div class="admin-card" style="margin-bottom: 30px;">
+  <h2 style="font-family: 'Bebas Neue'; font-size: 2rem; color: var(--brand); margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+    <span>📋 Pedidos Ativos (Cozinha)</span>
+    <button onclick="renderPedidosAdmin()" class="edit-btn" style="font-size: 0.9rem; padding: 5px 10px;">🔄 Atualizar Painel</button>
+  </h2>
+  
+  <div style="display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap;">
+    <button class="cat-tab active" id="btn-ped-todos" onclick="filtrarPedidos('Todos')">Todos</button>
+    <button class="cat-tab" id="btn-ped-pendente" onclick="filtrarPedidos('Pendente')" style="background: #ffc107; color: #000;">Pendentes</button>
+    <button class="cat-tab" id="btn-ped-preparo" onclick="filtrarPedidos('Em Preparo')" style="background: #17a2b8; color: #fff;">Na Cozinha</button>
+    <button class="cat-tab" id="btn-ped-entrega" onclick="filtrarPedidos('Saiu para Entrega')" style="background: #007bff; color: #fff;">Na Rua</button>
+  </div>
+
+  <div id="painelPedidosGrid" style="display: flex; flex-direction: column; gap: 15px;">
+    </div>
+</div>
+  <div class="admin-header">
+    <div class="admin-title">⚙️ Painel Admin</div>
+    <div class="admin-badge">Sabor na Brasa</div>
+    <div style="flex:1"></div>
+    <button onclick="showPage('home');saveProducts()" class="btn-save-exit">💾 Salvar e Sair</button>
+  </div>
+
+  <div class="admin-content">
+    
+    <div class="admin-card" style="margin-bottom:24px;">
+      <h3>📸 Gerenciar Destaques do Cabeçalho (Carrossel)</h3>
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:20px;">
+        
+        <div style="background:var(--smoke); padding:16px; border-radius:10px; border:1px solid #E8D5C8;">
+          <h4 style="margin-bottom:10px; color:var(--brand)">Destaque 1 (Esquerda)</h4>
+          <div class="form-group">
+            <label>Nova Foto</label>
+            <input type="file" id="fBanner1" accept="image/*" style="padding:5px;">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Etiqueta</label>
+              <input type="text" id="fBannerBadge1" placeholder="Ex: Mais Pedido">
+            </div>
+            <div class="form-group">
+              <label>Nome do Hambúrguer</label>
+              <input type="text" id="fBannerName1" placeholder="Ex: Brasa Clássico">
+            </div>
+          </div>
+        </div>
+
+        <div style="background:var(--smoke); padding:16px; border-radius:10px; border:1px solid #E8D5C8;">
+          <h4 style="margin-bottom:10px; color:var(--brand)">Destaque 2 (Centro)</h4>
+          <div class="form-group">
+            <label>Nova Foto</label>
+            <input type="file" id="fBanner2" accept="image/*" style="padding:5px;">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Etiqueta</label>
+              <input type="text" id="fBannerBadge2" placeholder="Ex: Novo">
+            </div>
+            <div class="form-group">
+              <label>Nome do Hambúrguer</label>
+              <input type="text" id="fBannerName2" placeholder="Ex: Smoke Monster">
+            </div>
+          </div>
+        </div>
+
+        <div style="background:var(--smoke); padding:16px; border-radius:10px; border:1px solid #E8D5C8;">
+          <h4 style="margin-bottom:10px; color:var(--brand)">Destaque 3 (Direita)</h4>
+          <div class="form-group">
+            <label>Nova Foto</label>
+            <input type="file" id="fBanner3" accept="image/*" style="padding:5px;">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Etiqueta</label>
+              <input type="text" id="fBannerBadge3" placeholder="Ex: Especial">
+            </div>
+            <div class="form-group">
+              <label>Nome do Hambúrguer</label>
+              <input type="text" id="fBannerName3" placeholder="Ex: Cheddar Love">
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <button class="btn-save" style="margin-top:16px; max-width:250px;" onclick="saveBanners()">💾 Atualizar Destaques</button>
+    </div>
+
+    <div class="admin-grid">
+      <div class="admin-card">
+        <h3 id="formTitle">➕ Adicionar Item ao Cardápio</h3>
+        <input type="hidden" id="editId" value="">
+
+        <div class="form-group">
+          <label for="fName">Nome do Produto</label>
+          <input type="text" id="fName" placeholder="Ex: X-Burger Brasa, Macarrão na Chapa...">
+        </div>
+
+        <div class="form-group">
+          <label for="fDesc">Descrição / Ingredientes</label>
+          <textarea id="fDesc" placeholder="Ex: Pão de brioche, blend artesanal 150g, queijo cheddar..."></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Foto do Produto</label>
+            <input type="file" id="fFoto" accept="image/*" style="padding:5px;">
+            <input type="hidden" id="fFotoBase64" value="">
+          </div>
+          <div class="form-group">
+            <label>Categoria</label>
+            <select id="fCat" onchange="controlarCamposPreco()">
+              <option value="Hambúrgueres">Hambúrgueres</option>
+              <option value="Brasa Gourmet">Brasa Gourmet</option>
+              <option value="Fritas">Fritas</option>
+              <option value="Combos">Combos</option>
+              <option value="Massas">Massas</option>
+              <option value="Sobremesas">Sobremesas</option>
+              <option value="Bebidas">Bebidas</option>
+            </select>
+          </div>
+        </div>
+
+            <div id="wrapper-preco-unico" class="price-block">
+        <div class="form-group">
+          <label for="fPrice">Preço Padrão (R$)</label>
+          <input type="number" id="fPrice" step="0.01" placeholder="0,00">
+        </div>
+      </div>
+
+      <div id="wrapper-precos-bebidas" class="price-block" style="display: none; gap: 10px;">
+        <div class="form-group" style="flex: 1;">
+          <label for="fPriceLata">Lata 350ml</label>
+          <input type="number" id="fPriceLata" step="0.01" placeholder="0,00">
+        </div>
+        <div class="form-group" style="flex: 1;">
+          <label for="fPrice600">600ml</label>
+          <input type="number" id="fPrice600" step="0.01" placeholder="0,00">
+        </div>
+        <div class="form-group" style="flex: 1;">
+          <label for="fPrice1L">1 Litro</label>
+          <input type="number" id="fPrice1L" step="0.01" placeholder="0,00">
+        </div>
+        <div class="form-group" style="flex: 1;">
+          <label for="fPrice2L">2 Litros</label>
+          <input type="number" id="fPrice2L" step="0.01" placeholder="0,00">
+        </div>
+      </div>
+
+      <div id="wrapper-precos-fritas" class="price-block" style="display: none; gap: 10px;">
+        <div class="form-group" style="flex: 1;">
+          <label for="fPriceFritasP">Tamanho P</label>
+          <input type="number" id="fPriceFritasP" step="0.01" placeholder="0,00">
+        </div>
+        <div class="form-group" style="flex: 1;">
+          <label for="fPriceFritasM">Tamanho M</label>
+          <input type="number" id="fPriceFritasM" step="0.01" placeholder="0,00">
+        </div>
+        <div class="form-group" style="flex: 1;">
+          <label for="fPriceFritasG">Tamanho G</label>
+          <input type="number" id="fPriceFritasG" step="0.01" placeholder="0,00">
+        </div>
+      </div>
+
+      <div id="wrapper-precos-massas" class="price-block" style="display: none; gap: 10px;">
+        <div class="form-group" style="flex: 1;">
+          <label for="fPriceMassasM">Tamanho M</label>
+          <input type="number" id="fPriceMassasM" step="0.01" placeholder="0,00">
+        </div>
+        <div class="form-group" style="flex: 1;">
+          <label for="fPriceMassasG">Tamanho G</label>
+          <input type="number" id="fPriceMassasG" step="0.01" placeholder="0,00">
+        </div>
+      </div>
+        <div class="form-row" style="margin-top: 15px;">
+          <div class="form-group">
+            <label>Destaque (Selo)</label>
+            <select id="fBadge">
+              <option value="">Nenhum</option>
+              <option value="Novo">🆕 Novo</option>
+              <option value="🔥 Mais Pedido">🔥 Mais Pedido</option>
+              <option value="⭐ Especial">⭐ Especial</option>
+              <option value="🏷️ Promoção">🏷️ Promoção</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Disponível</label>
+            <div class="toggle-wrap" style="margin-top: 8px;">
+              <label class="toggle">
+                <input type="checkbox" id="fAvailable" checked>
+                <span class="slider"></span>
+              </label>
+              <span style="font-size:0.9rem;color:var(--muted); margin-left: 8px;">Disponível</span>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-save" onclick="saveProduct()">💾 Salvar Item</button>
+        <button onclick="clearForm()" class="btn-clear-form">Limpar</button>
+      </div>
+
+      <div class="admin-card">
+        <h3>📋 Itens do Cardápio (<span id="itemCount">0</span>)</h3>
+        <div class="admin-products" id="adminProductList"></div>
+      </div>
+    </div>
+
+    <div class="admin-card" style="margin-top:24px">
+      <h3>🏪 Configurações da Loja</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px">
+        <div class="form-group">
+          <label>Nome da Loja</label>
+          <input type="text" id="sName" value="Sabor na Brasa">
+        </div>
+        <div class="form-group">
+          <label>Telefone</label>
+          <input type="text" id="sPhone" placeholder="(37) 99917-5310">
+        </div>
+        <div class="form-group">
+          <label>Endereço</label>
+          <input type="text" id="sAddress" placeholder="Rua, número - Bairro">
+        </div>
+        <div class="form-group">
+          <label>Horário de Funcionamento</label>
+          <input type="text" id="sHours" placeholder="Ter-Dom 18:00 às 23:45">
+        </div>
+        <div class="form-group">
+          <label>Taxa de Entrega (R$)</label>
+          <input type="number" id="sDelivery" placeholder="5.00" step="0.01" value="5.00">
+        </div>
+        <div class="form-group">
+          <label>Pedido Mínimo (R$)</label>
+          <input type="number" id="sMinOrder" placeholder="20.00" step="0.01" value="20.00">
+        </div>
+      </div>
+      <button class="btn-save" style="max-width:200px" onclick="saveSettings()">💾 Salvar Configurações</button>
+    </div>
+  </div>
+</div>
+
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-header">
+    <h2>🛒 Seu Pedido</h2>
+    <button class="close-cart" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="cart-total-row">
+      <span class="cart-total-label">Subtotal</span>
+      <span id="cartSubtotal" style="font-weight:700">R$ 0,00</span>
+    </div>
+    <div class="cart-total-row">
+      <span class="cart-total-label">Entrega</span>
+      <span id="cartDelivery" style="font-weight:700">R$ 5,00</span>
+    </div>
+    <div class="cart-total-row" style="margin-top:8px;padding-top:12px;border-top:1px solid #E8D5C8">
+      <span style="font-weight:900;font-size:1rem">Total</span>
+      <span class="cart-total-value" id="cartTotal">R$ 0,00</span>
+    </div>
+    <button class="checkout-btn" onclick="openCheckout()">Finalizar Pedido →</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="checkoutModal">
+  <div class="modal">
+    <h2>📦 Finalizar Pedido</h2>
+    <div id="checkoutForm">
+      <div class="form-group">
+        <label>Seu Nome</label>
+        <input type="text" id="cName" placeholder="Como te chamamos?">
+      </div>
+      <div class="form-group">
+        <label>Telefone / WhatsApp</label>
+        <input type="tel" id="cPhone" placeholder="(37) 99907-6336">
+      </div>
+      <div class="form-group">
+        <label>Forma de Entrega</label>
+        <select id="cDelivery">
+          <option value="entrega">🛵 Entrega em casa</option>
+          <option value="retirada">🏪 Retirar na loja</option>
+        </select>
+      </div>
+      <div class="form-group" id="addressGroup">
+        <label>Endereço de Entrega</label>
+        <input type="text" id="cAddress" placeholder="Rua, número, complemento">
+      </div>
+      <div class="form-group">
+        <label>Pagamento</label>
+        <select id="cPayment">
+          <option value="pix">💰 PIX</option>
+          <option value="dinheiro">💵 Dinheiro</option>
+          <option value="credito">💳 Cartão de Crédito</option>
+          <option value="debito">💳 Cartão de Débito</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Observações</label>
+        <textarea id="cObs" placeholder="Sem cebola? Ponto da carne? Diga aqui..."></textarea>
+      </div>
+
+      <div style="background:var(--smoke);border-radius:10px;padding:16px;margin-bottom:20px">
+        <div style="font-weight:700;margin-bottom:8px">Resumo do Pedido</div>
+        <div id="checkoutSummary" style="font-size:0.9rem;color:var(--muted)"></div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--brand);margin-top:8px" id="checkoutTotal"></div>
+      </div>
+
+      <div style="display:flex;gap:10px">
+        <button onclick="closeCheckout()" class="btn-back-checkout">Voltar</button>
+        <button class="btn-primary" style="flex:2;padding:14px;border-radius:10px" onclick="placeOrder()">Confirmar Pedido 🔥</button>
+      </div>
+    </div>
+
+    <div id="orderSuccess" style="display:none" class="modal-success">
+      <div class="success-icon">✅</div>
+      <h3>Pedido Confirmado!</h3>
+      <p>Seu pedido foi recebido e está sendo preparado com muito carinho.</p>
+      <button class="btn-primary" style="margin-top:20px;width:100%;padding:14px;border-radius:10px" onclick="closeCheckout();clearCart()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">🍔 Item adicionado!</div>
+
+<footer id="contato">
+  <div style="max-width:900px;margin:0 auto">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--gold);margin-bottom:4px">🔥 Sabor na Brasa</div>
+    <div style="margin-bottom:20px;font-size:0.9rem;line-height:2;color:#A07856">
+      📍 Rua Abaete, 66 - Nossa Senhora da Conceição &nbsp;·&nbsp; 📞 (37) 99917-5310 &nbsp;·&nbsp; 🕐 Ter–Dom 18:00 às 23:45
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:16px;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap">
+      <span>© 2026 <strong style="color:var(--gold)">Sabor na Brasa</strong> — Todos os direitos reservados</span>
+      <span style="color:rgba(255,255,255,0.1)">·</span>
+      <span id="adminTrigger" onclick="handleAdminTrigger()" style="color:rgba(255,255,255,0.07);font-size:0.75rem;cursor:pointer;">v1.0</span>
+    </div>
+  </div>
+</footer>
+
+<div id="thermal-receipt" class="print-only"></div>
+
+<div class="modal-overlay" id="modalAdicionais">
+  <div class="modal">
+    <div id="tamanhosContent" style="margin-bottom: 20px;"></div>
+    
+    <div id="adicionaisContent"></div>
+    
+    <div style="display:flex; gap:10px; margin-top:20px;">
+        <button onclick="closeModalAdicionais()" class="btn-back-checkout" style="flex:1">Cancelar</button>
+        <button onclick="confirmarAdicionais()" class="btn-primary" style="flex:2; padding:12px;">Adicionar ao Carrinho 🔥</button>
+    </div>
+  </div>
+</div>
+
+<script src="scripts.js"></script>
+</body>
+</html>
